@@ -62,11 +62,11 @@ module.exports = {
     },
   },
   configurations: {
-    'ios.sim.debug': {
+    'ios.simulator.debug': {
       device: 'simulator',
       app: 'ios.debug',
     },
-    'ios.sim.release': {
+    'ios.simulator.release': {
       device: 'simulator',
       app: 'ios.release',
     },
@@ -78,11 +78,11 @@ module.exports = {
       device: 'attached',
       app: 'android.release',
     },
-    'android.emu.debug': {
+    'android.emulator.debug': {
       device: 'emulator',
       app: 'android.debug',
     },
-    'android.emu.release': {
+    'android.emulator.release': {
       device: 'emulator',
       app: 'android.release',
     },
