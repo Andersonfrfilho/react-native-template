@@ -1,97 +1,77 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# React Native Template
 
-# Getting Started
+Este projeto é um template React Native com suporte a testes automatizados e integração com SonarQube local via Docker.
 
-> **Note**: Make sure you have completed the [Set Up Your Environment](https://reactnative.dev/docs/set-up-your-environment) guide before proceeding.
+## Requisitos
 
-## Step 1: Start Metro
+- Node.js >= 18
+- Docker e Docker Compose
+- Yarn ou npm
+- Android Studio e/ou Xcode (para rodar emuladores/simuladores)
+- Ambiente configurado para React Native
 
-First, you will need to run **Metro**, the JavaScript build tool for React Native.
+## Scripts disponíveis
 
-To start the Metro dev server, run the following command from the root of your React Native project:
-
-```sh
-# Using npm
+```bash
+# Inicia o servidor Metro
 npm start
 
-# OR using Yarn
-yarn start
-```
-
-## Step 2: Build and run your app
-
-With Metro running, open a new terminal window/pane from the root of your React Native project, and use one of the following commands to build and run your Android or iOS app:
-
-### Android
-
-```sh
-# Using npm
+# Executa o projeto no Android
 npm run android
 
-# OR using Yarn
-yarn android
-```
-
-### iOS
-
-For iOS, remember to install CocoaPods dependencies (this only needs to be run on first clone or after updating native deps).
-
-The first time you create a new project, run the Ruby bundler to install CocoaPods itself:
-
-```sh
-bundle install
-```
-
-Then, and every time you update your native dependencies, run:
-
-```sh
-bundle exec pod install
-```
-
-For more information, please visit [CocoaPods Getting Started guide](https://guides.cocoapods.org/using/getting-started.html).
-
-```sh
-# Using npm
+# Executa o projeto no iOS
 npm run ios
 
-# OR using Yarn
-yarn ios
+# Executa o ESLint
+npm run lint
+
+# Executa os testes unitários com Jest
+npm run test
+
+# Executa os testes E2E com Detox
+npm run detox:build:debug:android
+npm run detox:test:debug:android
+npm run detox:build:debug:ios
+npm run detox:test:debug:ios
+
+# Executa a análise de código com SonarQube
+npm run sonar
 ```
 
-If everything is set up correctly, you should see your new app running in the Android Emulator, iOS Simulator, or your connected device.
+## Rodando SonarQube com Docker
 
-This is one way to run your app — you can also build it directly from Android Studio or Xcode.
+1. Suba o container com o SonarQube:
 
-## Step 3: Modify your app
+```bash
+docker compose up -d
+```
 
-Now that you have successfully run the app, let's make changes!
+2. Acesse o SonarQube no navegador em [http://localhost:9000](http://localhost:9000) e crie um token.
 
-Open `App.tsx` in your text editor of choice and make some changes. When you save, your app will automatically update and reflect these changes — this is powered by [Fast Refresh](https://reactnative.dev/docs/fast-refresh).
+Usuário padrão: admin
+Senha padrão: admin
 
-When you want to forcefully reload, for example to reset the state of your app, you can perform a full reload:
+2.1 Gere um token no SonarQube
+Acesse http://localhost:9000
 
-- **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Dev Menu**, accessed via <kbd>Ctrl</kbd> + <kbd>M</kbd> (Windows/Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (macOS).
-- **iOS**: Press <kbd>R</kbd> in iOS Simulator.
+Vá até: Meu Conta > Segurança
 
-## Congratulations! :tada:
+Crie um token de acesso (ex: sonar-token-template)
 
-You've successfully run and modified your React Native App. :partying_face:
+Copie o token gerado
 
-### Now what?
+3. Crie um arquivo `.env` com seu token do SonarQube:
 
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [docs](https://reactnative.dev/docs/getting-started).
+```
+SONARQUBE_TOKEN=seu_token_aqui
+```
 
-# Troubleshooting
+4. Execute a análise com o comando:
 
-If you're having issues getting the above steps to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
+```bash
+npm run sonar
+```
 
-# Learn More
+## Arquivo de configuração do SonarQube
 
-To learn more about React Native, take a look at the following resources:
-
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+O arquivo `sonar-project.properties` já está incluído no projeto.
