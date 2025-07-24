@@ -8,10 +8,14 @@
     "lint": "eslint .",
     "start": "react-native start",
     "test": "jest",
-    "detox:test:ios": "detox test --configuration ios.simulator.debug",
-    "detox:build:ios": "detox build --configuration ios.simulator.debug",
-    "detox:test:android": "detox test --configuration android.emulator.debug",
-    "detox:build:android": "detox build --configuration android.emulator.debug"
+    "detox:test:debug:ios": "detox test --configuration ios.simulator.debug",
+    "detox:test:release:ios": "detox test --configuration ios.simulator.release",
+    "detox:build:debug:ios": "detox build --configuration ios.simulator.debug",
+    "detox:build:release:ios": "detox build --configuration ios.simulator.release",
+    "detox:test:debug:android": "detox test --configuration android.emulator.debug",
+    "detox:test:release:android": "detox test --configuration android.emulator.release",
+    "detox:build:debug:android": "detox build --configuration android.emulator.debug",
+    "detox:build:release:android": "detox build --configuration android.emulator.release"
   },
   "dependencies": {
     "react": "19.0.0",
