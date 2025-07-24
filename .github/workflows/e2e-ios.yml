@@ -50,7 +50,7 @@ jobs:
         run: cd ios ; pod install ; cd -
 
       - name: Detox rebuild framework cache
-        run: npx detox rebuild-framework-cache --configuration ios.sim.release
+        run: npx detox rebuild-framework-cache --configuration ios.simulator.release
 
       - name: Cache Detox build
         id: cache-detox-build
@@ -62,10 +62,10 @@ jobs:
             ${{ runner.os }}-detox-build
 
       - name: Detox build
-        run: npx detox build --configuration ios.sim.release
+        run: npx detox build --configuration ios.simulator.release
 
       - name: Detox test
-        run: npx detox test --configuration ios.sim.release --cleanup --headless --record-logs all
+        run: npx detox test --configuration ios.simulator.release --cleanup --headless --record-logs all
 
       - name: Upload artifacts
         if: failure()
