@@ -42,7 +42,7 @@ jobs:
         with:
           api-level: 31
           arch: x86_64
-          avd-name: Android_API31
+          avd-name: Pixel_8_API_35_1
           force-avd-creation: false
           emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none -no-metrics
           disable-animations: false

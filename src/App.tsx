@@ -1,10 +1,3 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
-
 import React from 'react';
 import type {PropsWithChildren} from 'react';
 import {
@@ -71,17 +64,15 @@ function App(): React.JSX.Element {
         barStyle={isDarkMode ? 'light-content' : 'dark-content'}
         backgroundColor={backgroundStyle.backgroundColor}
       />
-        <View style={{paddingRight: safePadding}}>
-          <Header/>
-        </View>
-        <Button
-          testID="hello_button"
-          title="Click me!"
-          onPress={() => setShowMessage(true)}
-        />
-        {showMessage && (
-          <Text testID="hello_text">Hello!!!</Text>
-        )}
+      <View style={{paddingRight: safePadding}}>
+        <Header />
+      </View>
+      <Button
+        testID="hello_button"
+        title="Click me!"
+        onPress={() => setShowMessage(true)}
+      />
+      {showMessage && <Text testID="hello_text">Hello!!!</Text>}
     </View>
   );
 }
