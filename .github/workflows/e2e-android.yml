@@ -1,5 +1,7 @@
 name: e2e-android
+
 on: push
+
 jobs:
   build:
     runs-on: macos-latest
@@ -21,11 +23,21 @@ jobs:
           distribution: 'zulu'
           architecture: 'x64'
 
-      - name: Download and Create Android Emulator Image
+      - name: Setup Android Emulator
         run: |
-          yes | ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager --sdk_root=${ANDROID_HOME} --install "system-images;android-30;google_apis;arm64-v8a"
-          echo "no" | ${ANDROID_HOME}/cmdline-tools/latest/bin/avdmanager create avd --force -n Pixel_8_API_35_1 -d pixel --package "system-images;android-30;google_apis;arm64-v8a"
-          ${ANDROID_HOME}/emulator/emulator -list-avds
+          export ANDROID_SDK_ROOT=$ANDROID_HOME
+          export PATH=$ANDROID_SDK_ROOT/emulator:$ANDROID_SDK_ROOT/platform-tools:$ANDROID_SDK_ROOT/cmdline-tools/latest/bin:$PATH
+
+          echo "y" | sdkmanager "platform-tools" "emulator" "platforms;android-30" "system-images;android-30;google_apis;arm64-v8a"
+
+          echo "no" | avdmanager create avd --force \
+            --name Pixel_8_API_35_1 \
+            --device "pixel" \
+            --package "system-images;android-30;google_apis;arm64-v8a" \
+            --tag "google_apis" \
+            --abi "arm64-v8a"
+
+          emulator -list-avds
 
       - name: Install node_modules
         run: |
@@ -41,7 +53,7 @@ jobs:
 
       - name: Android Run Detox
         run: |
-          npx detox test --configuration android.emulator.release  --cleanup --headless --record-logs all
+          npx detox test --configuration android.emulator.release --cleanup --headless --record-logs all
 
       - name: Upload Test Artifact - GitHub Action
         if: always()
