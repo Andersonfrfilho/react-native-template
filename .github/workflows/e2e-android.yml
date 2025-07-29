@@ -42,8 +42,10 @@ jobs:
       - name: Start Metro Server in background
         run: |
           npm install -g wait-on
-          nohup npm run start > metro.log 2>&1 &
-          wait-on http://localhost:8081
+          nohup npx react-native start --no-interactive --reset-cache > metro.log 2>&1 &
+          sleep 5
+          tail -n 20 metro.log || true
+          wait-on http://localhost:8081 --timeout 60000
 
       - name: Run Detox tests
         uses: reactivecircus/android-emulator-runner@v2
