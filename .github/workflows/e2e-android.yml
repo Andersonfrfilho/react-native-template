@@ -40,7 +40,7 @@ jobs:
         run: npm run detox:build:debug:android
 
       - name: Start Metro Server
-        run: npm run detox:start &
+        run: npm run start
 
       - name: Run Detox tests
         uses: reactivecircus/android-emulator-runner@v2
