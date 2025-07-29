@@ -23,7 +23,7 @@ jobs:
 
       - name: Download and Create Android Emulator Image
         run: |
-          yes | ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager --sdk_root=${ANDROID_HOME} --install "system-images;android-29;google_apis;x86"
+          yes | ${ANDROID_HOME}/cmdline-tools/latest/bin/sdkmanager --sdk_root=${ANDROID_HOME} --install "system-images;android-30;google_apis;x86_64"
           echo "no" | ${ANDROID_HOME}/cmdline-tools/latest/bin/avdmanager create avd --force -n Pixel_8_API_35_1 -d pixel --package "system-images;android-29;google_apis;x86"
           ${ANDROID_HOME}/emulator/emulator -list-avds
 
