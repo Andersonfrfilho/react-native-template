@@ -1,67 +1,51 @@
 name: e2e-android
 on: push
 jobs:
-  build-and-test-android:
-    name: Android - Build and run Detox tests
-    runs-on: ubuntu-latest
+  build:
+    runs-on: macos-latest
+    timeout-minutes: 30
 
     steps:
-      - name: Free Disk Space (Ubuntu)
-        uses: jlumbroso/free-disk-space@main
-        with:
-          tool-cache: true
-          android: false
-
-      - name: Checkout Code
-        uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v3
         with:
           fetch-depth: 1
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22.2.0
+      - name: Node
+        uses: actions/setup-node@v3
 
-      - name: Setup Java
-        uses: actions/setup-java@v4
+      - name: Install JDK
+        uses: actions/setup-java@v3
         with:
-          distribution: zulu
-          java-version: 17
+          java-version: '8'
+          distribution: 'zulu'
+          architecture: 'x64'
 
-      - name: Install libpulse0 (fix for Android emulator audio libs)
+      - name: Download and Create Android Emulator Image
         run: |
-          sudo apt update
-          sudo apt install -y libpulse0
+          $ANDROID_HOME/tools/bin/sdkmanager --install "system-images;android-29;google_apis;x86"
+          $ANDROID_HOME/tools/bin/avdmanager create avd --force -n TestEmulator -d pixel --package 'system-images;android-29;google_apis;x86'
+          $ANDROID_HOME/emulator/emulator -list-avds
 
-      - name: Npm install
-        run: npm install
-
-      - name: Build Detox
-        run: npm run detox:build:debug:android
-
-      - name: Start Metro Server in background
+      - name: Install node_modules
         run: |
-          npm install -g wait-on
-          nohup npx react-native start --no-interactive --reset-cache > metro.log 2>&1 &
-          sleep 5
-          tail -n 20 metro.log || true
-          wait-on http://localhost:8081 --timeout 60000
+          npm install
 
-      - name: Run Detox tests
-        uses: reactivecircus/android-emulator-runner@v2
-        with:
-          api-level: 31
-          arch: x86_64
-          avd-name: Pixel_8_API_35_1
-          force-avd-creation: true
-          emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none -no-metrics
-          disable-animations: false
-          script: npm run detox:test:debug:android
+      - name: Start RN Packager
+        run: |
+          npx react-native start &
 
-      - name: Upload Test Artifact
-        if: failure()
-        uses: actions/upload-artifact@v4
+      - name: Build detox
+        run: |
+          npx detox build -c android.emulator.release
+
+      - name: Android Run Detox
+        run: |
+          npx detox test --configuration android.emulator.release  --cleanup --headless --record-logs all
+
+      - name: Upload Test Artifact - GitHub Action
+        if: always()
+        uses: actions/upload-artifact@v2
         with:
-          name: detox-android-artifacts
+          name: artifacts
           path: artifacts
-          retention-days: 5
