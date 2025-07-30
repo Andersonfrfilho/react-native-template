@@ -53,7 +53,7 @@ jobs:
 
       - name: Android Run Detox
         run: |
-          npx detox test --configuration android.emulator.release --cleanup --headless --record-logs all
+          npm run detox:test:release:android
 
       - name: Upload Test Artifact - GitHub Action
         if: always()
