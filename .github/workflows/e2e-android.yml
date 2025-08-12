@@ -1,57 +1,63 @@
 name: e2e-android
+
 on: push
+
 jobs:
-  build-and-test-android:
-    name: Android - Build and run Detox tests
-    runs-on: ubuntu-latest
+  build:
+    runs-on: macos-latest
+    timeout-minutes: 30
 
     steps:
-      - name: Free Disk Space (Ubuntu)
-        uses: jlumbroso/free-disk-space@main
-        with:
-          tool-cache: true
-          android: false
-
-      - name: Checkout Code
-        uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v3
         with:
           fetch-depth: 1
 
-      - name: Setup Node.js
+      - name: Node
         uses: actions/setup-node@v4
+
+      - name: Install JDK
+        uses: actions/setup-java@v3
         with:
-          node-version: 22.2.0
+          java-version: '17'
+          distribution: 'zulu'
+          architecture: 'x64'
 
-      - name: Setup Java
-        uses: actions/setup-java@v4
-        with:
-          distribution: zulu
-          java-version: 17
+      - name: Setup Android Emulator
+        run: |
+          export ANDROID_SDK_ROOT=$ANDROID_HOME
+          export PATH=$ANDROID_SDK_ROOT/emulator:$ANDROID_SDK_ROOT/platform-tools:$ANDROID_SDK_ROOT/cmdline-tools/latest/bin:$PATH
 
-      - name: Npm install
-        run: npm install
+          echo "y" | sdkmanager "platform-tools" "emulator" "platforms;android-30" "system-images;android-30;google_apis;arm64-v8a"
 
-      - name: Build Detox
-        run: npm run detox:build:debug:android
+          echo "no" | avdmanager create avd --force \
+            --name Pixel_8_API_35_1 \
+            --device "pixel" \
+            --package "system-images;android-30;google_apis;arm64-v8a" \
+            --tag "google_apis" \
+            --abi "arm64-v8a"
 
-      - name: Start Metro Server
-        run: npm run detox:start &
+          emulator -list-avds
 
-      - name: Run Detox tests
-        uses: reactivecircus/android-emulator-runner@v2
-        with:
-          api-level: 31
-          arch: x86_64
-          avd-name: Android_API31
-          force-avd-creation: false
-          emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none -no-metrics
-          disable-animations: false
-          script: npm run detox:test:debug:android
+      - name: Install node_modules
+        run: |
+          npm install
 
-      - name: Upload Test Artifact
-        if: failure()
+      - name: Start RN Packager
+        run: |
+          npx react-native start &
+
+      - name: Build detox
+        run: |
+          npx detox build -c android.emulator.release
+
+      - name: Android Run Detox
+        run: |
+          npm run detox:test:release:android
+
+      - name: Upload Test Artifact - GitHub Action
+        if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: detox-android-artifacts
+          name: artifacts
           path: artifacts
-          retention-days: 5
