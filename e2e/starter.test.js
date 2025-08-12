@@ -1,6 +1,9 @@
 describe('Example', () => {
   beforeAll(async () => {
     await device.launchApp();
+    await waitFor(element(by.id('hello_button')))
+      .toBeVisible()
+      .withTimeout(5000);
   });
 
   beforeEach(async () => {
